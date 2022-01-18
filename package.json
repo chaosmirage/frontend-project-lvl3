@@ -1,0 +1,41 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "[![Actions Status](https://github.com/chaosmirage/frontend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/chaosmirage/frontend-project-lvl3/actions)",
+  "engines": {
+    "node": ">=14"
+  },
+  "type": "module",
+  "jest": {
+    "testEnvironment": "node",
+    "testRunner": "jest-circus/runner",
+    "transform": {}
+  },
+  "main": "src/index.js",
+  "scripts": {
+    "test": "npx jest --bail"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chaosmirage/frontend-project-lvl3.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chaosmirage/frontend-project-lvl3/issues"
+  },
+  "homepage": "https://github.com/chaosmirage/frontend-project-lvl3#readme",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@jest/globals": "^26.6.2",
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.3.5",
+    "jest": "^26.6.3",
+    "jest-circus": "^26.6.3"
+  }
+}
