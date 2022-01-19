@@ -5,13 +5,12 @@
   "engines": {
     "node": ">=14"
   },
-  "type": "module",
   "jest": {
-    "testEnvironment": "node",
-    "testRunner": "jest-circus/runner",
-    "transform": {}
+    "verbose": true,
+    "testURL": "http://localhost/",
+    "testEnvironment": "jsdom"
   },
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "scripts": {
     "test": "npx jest --bail"
   },
@@ -26,7 +25,10 @@
   },
   "homepage": "https://github.com/chaosmirage/frontend-project-lvl3#readme",
   "dependencies": {
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "bootstrap": "^5.0.2",
+    "jquery": "^3.5.1",
+    "popper.js": "^1.16.1"
   },
   "devDependencies": {
     "@jest/globals": "^26.6.2",
@@ -36,6 +38,19 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^24.3.5",
     "jest": "^26.6.3",
-    "jest-circus": "^26.6.3"
+    "jest-circus": "^26.6.3",
+    "webpack": "^5.3.2",
+    "webpack-cli": "^4.1.0",
+    "html-webpack-plugin": "^4.5.0",
+    "css-loader": "^5.0.0",
+    "style-loader": "^2.0.0",
+    "postcss-loader": "^4.0.4",
+    "autoprefixer": "^10.0.1",
+    "typescript": "^4.0.5",
+    "ts-loader": "^8.0.7",
+    "postcss-preset-env": "^6.7.0",
+    "url-loader": "^4.1.1",
+    "webpack-dev-server": "^4.1.1",
+    "file-loader": "^6.2.0"
   }
 }
