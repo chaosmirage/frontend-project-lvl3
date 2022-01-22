@@ -1,7 +1,7 @@
 import onChange from 'on-change';
 import type { i18n } from 'i18next';
 import { array, object, string, InferType, ValidationError, addMethod } from 'yup';
-import { uniqueId } from 'lodash';
+import uniqueId from 'lodash/uniqueId';
 import render from './render';
 import makeRequest from './lib/makeRequest';
 

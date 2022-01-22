@@ -9,6 +9,7 @@
       "moduleResolution": "node",
       "target": "esnext",
       "allowJs": true,
+      "allowSyntheticDefaultImports": true
   },
   "include": [
       "./src/**/*"
