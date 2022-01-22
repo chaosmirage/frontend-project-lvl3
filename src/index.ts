@@ -1,10 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.css';
 import i18n from 'i18next';
-
 import * as resources from './locales';
-
-import { array, addMethod } from 'yup';
 
 import makeApp from './app';
 

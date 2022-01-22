@@ -1,18 +1,162 @@
 import type { AppState, AppRenderElements } from './app';
 import type { i18n } from 'i18next';
 
-export default (state: AppState, elements: AppRenderElements, { t }: i18n) => {
-  const { addingFormFeedbackElement, addingFormElement, addingFormInputElement } = elements;
-  const { addingFeedProcess } = state;
+function renderAddingForm(state: AppState, elements: AppRenderElements, { t }: i18n) {
+  const {
+    addingFormFeedbackElement,
+    addingFormElement,
+    addingFormInputElement,
+    addingFormSubmitButtonElement,
+  } = elements;
 
-  if (addingFeedProcess.state === 'invalid') {
+  const {
+    feed: { addingProcess, validatingProcess, loadingProcess, parsingProcess },
+  } = state;
+
+  if (addingProcess.state === 'validating' && validatingProcess.state === 'invalid') {
+    addingFormFeedbackElement.classList.remove('text-danger', 'text-success');
+    addingFormFeedbackElement.classList.add('text-danger');
     addingFormInputElement.classList.add('is-invalid');
-    addingFormFeedbackElement.textContent = addingFeedProcess.errors.join('\n');
+
+    addingFormFeedbackElement.textContent = addingProcess.errors.join('\n');
   }
 
-  if (addingFeedProcess.state === 'success') {
+  if (addingProcess.state === 'loading' && loadingProcess.state === 'started') {
+    addingFormFeedbackElement.classList.remove('text-danger', 'text-success');
     addingFormInputElement.classList.remove('is-invalid');
+    addingFormFeedbackElement.textContent = '';
+    addingFormSubmitButtonElement.classList.add('disabled');
+  }
+
+  if (addingProcess.state === 'loading' && loadingProcess.state === 'error') {
+    addingFormFeedbackElement.classList.remove('text-danger', 'text-success');
+    addingFormSubmitButtonElement.classList.remove('disabled');
+
+    addingFormFeedbackElement.classList.add('text-danger');
+    addingFormFeedbackElement.textContent = t('errorsMessages.networkError');
+  }
+
+  if (addingProcess.state === 'loading' && loadingProcess.state === 'loaded') {
+    addingFormFeedbackElement.classList.remove('text-danger', 'text-success');
+    addingFormSubmitButtonElement.classList.remove('disabled');
+
+    addingFormFeedbackElement.classList.add('text-success');
+
+    addingFormFeedbackElement.textContent = t('successMessages.loadedRSS');
+
     addingFormElement.reset();
     addingFormInputElement.focus();
+  }
+
+  if (addingProcess.state === 'parsing' && parsingProcess.state === 'error') {
+    addingFormFeedbackElement.classList.remove('text-danger', 'text-success');
+
+    addingFormFeedbackElement.classList.add('text-danger');
+    addingFormFeedbackElement.textContent = t('errorsMessages.invalidRSS');
+  }
+}
+
+function renderPosts(state: AppState, elements: AppRenderElements, { t }: i18n) {
+  const { postsContainerElement } = elements;
+
+  const {
+    feed: { posts },
+  } = state;
+
+  postsContainerElement.innerHTML = `
+    <div class="card-body">
+        <h2 class="card-title h4">${t('titles.feeds')}</h2>
+    </div>
+  `;
+
+  const postsListContainerElement = document.createElement('ul');
+  postsListContainerElement.classList.add('list-group', 'border-0', 'rounded-0');
+
+  const postsItemsElements = posts.map((currentPost) => {
+    const itemElement = document.createElement('li');
+
+    itemElement.classList.add(
+      'list-group-item',
+      'd-flex',
+      'justify-content-between',
+      'align-items-start',
+      'border-0',
+      'border-end-0'
+    );
+
+    const link = document.createElement('a');
+    link.setAttribute('target', '_blank');
+    link.setAttribute('rel', 'noopener noreferrer');
+
+    link.href = currentPost.url;
+    link.textContent = currentPost.title;
+
+    const lookButton = document.createElement('button');
+
+    lookButton.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+    lookButton.setAttribute('type', 'button');
+
+    lookButton.textContent = `${t('actions.look')}`;
+
+    itemElement.append(link, lookButton);
+
+    return itemElement;
+  });
+
+  postsListContainerElement.append(...postsItemsElements);
+  postsContainerElement.appendChild(postsListContainerElement);
+}
+
+function renderFeeds(state: AppState, elements: AppRenderElements, { t }: i18n) {
+  const { feedsContainerElement } = elements;
+
+  const {
+    feed: { feeds },
+  } = state;
+
+  feedsContainerElement.innerHTML = `
+    <div class="card border-0">
+      <div class="card-body"><h2 class="card-title h4">${t('titles.feeds')}</h2>
+    </div>
+  `;
+
+  const postsListContainerElement = document.createElement('ul');
+  postsListContainerElement.classList.add('list-group', 'border-0', 'rounded-0');
+
+  const feedsItemsElements = feeds.map((currentFeed) => {
+    const itemElement = document.createElement('li');
+
+    itemElement.classList.add('list-group-item', 'border-0', 'border-end-0');
+
+    const headerElement = document.createElement('h3');
+    headerElement.classList.add('h6', 'm-0');
+    headerElement.textContent = currentFeed.title;
+
+    const descriptionElement = document.createElement('p');
+    descriptionElement.classList.add('m-0', 'small', 'text-black-50');
+    descriptionElement.textContent = currentFeed.description;
+
+    itemElement.append(headerElement, descriptionElement);
+
+    return itemElement;
+  });
+
+  postsListContainerElement.append(...feedsItemsElements);
+  feedsContainerElement.appendChild(postsListContainerElement);
+}
+
+export default (state: AppState, elements: AppRenderElements, i18n: i18n) => {
+  const {
+    feed: { feeds, posts },
+  } = state;
+
+  renderAddingForm(state, elements, i18n);
+
+  if (posts.length > 0) {
+    renderPosts(state, elements, i18n);
+  }
+
+  if (feeds.length > 0) {
+    renderFeeds(state, elements, i18n);
   }
 };

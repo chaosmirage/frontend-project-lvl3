@@ -1,5 +1,3 @@
-import run from '../src';
-
 it('true', () => {
-  expect(run()).toBe(true);
+  expect(true).toBe(true);
 });

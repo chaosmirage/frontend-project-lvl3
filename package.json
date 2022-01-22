@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/chaosmirage/frontend-project-lvl3#readme",
   "dependencies": {
+    "axios": "^0.25.0",
     "bootstrap": "^5.0.2",
     "i18next": "^21.6.6",
     "jquery": "^3.5.1",
