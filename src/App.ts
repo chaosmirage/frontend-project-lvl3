@@ -2,6 +2,8 @@ import onChange from 'on-change';
 import type { i18n } from 'i18next';
 import { array, object, string, InferType, ValidationError, addMethod } from 'yup';
 import uniqueId from 'lodash/uniqueId';
+import differenceWith from 'lodash/differenceWith';
+import isEqual from 'lodash/isEqual';
 import render from './render';
 import makeRequest from './lib/makeRequest';
 
@@ -60,6 +62,9 @@ export interface AppState {
     parsingProcess: {
       state: 'idle' | 'started' | 'error';
     };
+    updatingProcess: {
+      state: 'idle' | 'started';
+    };
     feeds: Feed[];
     posts: Post[];
   };
@@ -73,7 +78,6 @@ function toProxyUrl(url: string) {
 
 function parseContent(content: string, parse: DOMParser['parseFromString']) {
   const rssDOM = parse(content, 'text/xml');
-  console.log('🚀 ~ file: App.ts ~ line 79 ~ parseContent ~ rssDOM', rssDOM);
 
   const errorNode = rssDOM.querySelector('parsererror');
   if (errorNode) {
@@ -154,12 +158,75 @@ export default (i18nInstance: i18n) => () => {
       parsingProcess: {
         state: 'idle',
       },
+      updatingProcess: {
+        state: 'idle',
+      },
       feeds: [],
       posts: [],
     },
   };
 
+  function updateFeedState(content: string, url: string) {
+    const parser = new DOMParser();
+    const parse = parser.parseFromString.bind(parser);
+    const { feed: loadedFeed, posts: loadedPosts } = parseContent(content, parse);
+
+    const loadedFeeds = [{ ...loadedFeed, url }];
+
+    if (loadedFeed) {
+      const newFeeds = differenceWith(loadedFeeds, watchedAppState.feed.feeds, (a, b) => {
+        const { id: omittedIdFromA, ...aDataFromApi } = a;
+        const { id: omittedIdFromB, ...bDataFromApi } = b;
+
+        return isEqual(aDataFromApi, bDataFromApi);
+      });
+
+      if (newFeeds.length > 0) {
+        watchedAppState.feed.feeds = loadedFeeds.concat(
+          onChange.target(watchedAppState).feed.feeds
+        );
+      }
+    }
+
+    if (loadedPosts) {
+      const newPosts = differenceWith(loadedPosts, watchedAppState.feed.posts, (a, b) => {
+        const { id: omittedIdFromA, ...aDataFromApi } = a;
+        const { id: omittedIdFromB, ...bDataFromApi } = b;
+
+        return isEqual(aDataFromApi, bDataFromApi);
+      });
+
+      if (newPosts.length > 0) {
+        watchedAppState.feed.posts = newPosts.concat(onChange.target(watchedAppState).feed.posts);
+      }
+    }
+  }
+
+  function updateFeeds(appState: AppState, options = { interval: 5000 }) {
+    setTimeout(() => {
+      const requests = appState.feed.feeds.map(({ url }) => makeRequest.get(toProxyUrl(url)));
+
+      return Promise.all(requests)
+        .then((results) => {
+          results.forEach(({ data }, index) => {
+            updateFeedState(data.contents, appState.feed.feeds[index].url);
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {
+          updateFeeds(appState, options);
+        });
+    }, options.interval);
+  }
+
   const watchedAppState = onChange(appState, function () {
+    if (appState.feed.updatingProcess.state === 'idle' && appState.feed.feeds.length > 0) {
+      updateFeeds(appState);
+      appState.feed.updatingProcess.state = 'started';
+    }
+
     render(
       appState,
       {
@@ -200,40 +267,31 @@ export default (i18nInstance: i18n) => () => {
         watchedAppState.feed.loadingProcess.state = 'started';
         watchedAppState.feed.validatingProcess.state = 'valid';
 
-        makeRequest
-          .get(toProxyUrl(url))
-          .then((response) => {
-            watchedAppState.feed.loadingProcess.state = 'loaded';
-            watchedAppState.feed.addingProcess.state = 'parsing';
-            watchedAppState.feed.parsingProcess.state = 'started';
+        function loadFeed() {
+          return makeRequest
+            .get(toProxyUrl(url))
+            .then((response) => {
+              watchedAppState.feed.loadingProcess.state = 'loaded';
+              watchedAppState.feed.addingProcess.state = 'parsing';
+              watchedAppState.feed.parsingProcess.state = 'started';
 
-            const parser = new DOMParser();
-            const parse = parser.parseFromString.bind(parser);
+              try {
+                updateFeedState(response.data.contents, url);
 
-            try {
-              const { feed: newFeed, posts: newPosts } = parseContent(
-                response.data.contents,
-                parse
-              );
-
-              if (newFeed && newPosts) {
-                watchedAppState.feed.feeds = [{ ...newFeed, url }].concat(
-                  watchedAppState.feed.feeds
-                );
-                watchedAppState.feed.posts = newPosts.concat(watchedAppState.feed.posts);
+                watchedAppState.feed.addingProcess.state = 'idle';
+                watchedAppState.feed.parsingProcess.state = 'idle';
+              } catch (error) {
+                console.log(error);
+                watchedAppState.feed.parsingProcess.state = 'error';
               }
-
-              watchedAppState.feed.addingProcess.state = 'idle';
-              watchedAppState.feed.parsingProcess.state = 'idle';
-            } catch (error) {
+            })
+            .catch((error) => {
               console.log(error);
-              watchedAppState.feed.parsingProcess.state = 'error';
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-            watchedAppState.feed.loadingProcess.state = 'error';
-          });
+              watchedAppState.feed.loadingProcess.state = 'error';
+            });
+        }
+
+        loadFeed();
       })
       .catch((error: ValidationError) => {
         console.log(error);
