@@ -22,12 +22,7 @@ addMethod(array, 'unique', function (message, mapper = (a: unknown) => a) {
 });
 
 const feedSchema = object({
-  url: string()
-    .matches(
-      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-      'errorsMessages.invalidURL'
-    )
-    .required(),
+  url: string().url('errorsMessages.invalidURL').required(),
 });
 
 export const feedsSchema = array()
