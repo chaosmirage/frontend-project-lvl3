@@ -91,10 +91,58 @@ function renderPosts(state: AppState, elements: AppRenderElements, { t }: i18n) 
     link.href = currentPost.url;
     link.textContent = currentPost.title;
 
+    if (state.uiState.readPosts.has(currentPost.id)) {
+      link.classList.add('fw-normal', 'link-secondary');
+    } else {
+      link.classList.add('fw-bold');
+    }
+
+    link.addEventListener(
+      'click',
+      (
+        ({ id }) =>
+        () => {
+          if (!state.uiState.readPosts.has(id)) {
+            state.uiState.readPosts.add(id);
+          }
+        }
+      )(currentPost)
+    );
+
     const lookButton = document.createElement('button');
 
     lookButton.classList.add('btn', 'btn-outline-primary', 'btn-sm');
     lookButton.setAttribute('type', 'button');
+    lookButton.setAttribute('data-bs-toggle', 'modal');
+    lookButton.setAttribute('data-bs-target', '#modal');
+
+    lookButton.addEventListener(
+      'click',
+      (
+        ({ title, description, url, id }) =>
+        () => {
+          const modalTitleElement = document.querySelector('.modal-title');
+          const modalBodyElement = document.querySelector('.modal-body');
+          const goToSourceElement = document.querySelector('.modal .full-article');
+
+          if (modalTitleElement) {
+            modalTitleElement.textContent = title;
+          }
+
+          if (modalBodyElement) {
+            modalBodyElement.textContent = description;
+          }
+
+          if (goToSourceElement) {
+            goToSourceElement.setAttribute('href', url);
+          }
+
+          if (!state.uiState.readPosts.has(id)) {
+            state.uiState.readPosts.add(id);
+          }
+        }
+      )(currentPost)
+    );
 
     lookButton.textContent = `${t('actions.look')}`;
 

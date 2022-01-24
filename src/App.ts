@@ -68,6 +68,9 @@ export interface AppState {
     feeds: Feed[];
     posts: Post[];
   };
+  uiState: {
+    readPosts: Set<string>;
+  };
 }
 
 function toProxyUrl(url: string) {
@@ -164,6 +167,9 @@ export default (i18nInstance: i18n) => () => {
       feeds: [],
       posts: [],
     },
+    uiState: {
+      readPosts: new Set<string>(),
+    },
   };
 
   function updateFeedState(content: string, url: string) {
@@ -228,7 +234,7 @@ export default (i18nInstance: i18n) => () => {
     }
 
     render(
-      appState,
+      watchedAppState,
       {
         addingFormFeedbackElement,
         addingFormElement,
