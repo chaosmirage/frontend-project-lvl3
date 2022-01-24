@@ -17,6 +17,9 @@ install:
 	npm ci
 
 build:
+	npm list typescript
+	tsc --showConfig
+	node -v
 	rm -rf dist
 	NODE_ENV=production npx webpack
 

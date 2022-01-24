@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "[![Actions Status](https://github.com/chaosmirage/frontend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/chaosmirage/frontend-project-lvl3/actions)",
   "engines": {
-    "node": ">=14"
+    "node": "14.x"
   },
-  "main": "src/index.ts",
+  "main": "dist/bundle.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "npx jest --bail"
   },
@@ -20,13 +21,13 @@
   },
   "homepage": "https://github.com/chaosmirage/frontend-project-lvl3#readme",
   "dependencies": {
+    "@popperjs/core": "^2.11.2",
     "axios": "^0.25.0",
     "bootstrap": "^5.0.2",
     "i18next": "^21.6.6",
     "jquery": "^3.5.1",
     "lodash": "^4.17.21",
     "on-change": "^4.0.0",
-    "popper.js": "^1.16.1",
     "yup": "^0.32.11"
   },
   "devDependencies": {

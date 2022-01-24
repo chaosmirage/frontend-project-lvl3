@@ -4,7 +4,7 @@ import './style.css';
 import i18n from 'i18next';
 import * as resources from './locales';
 
-import makeApp from './app';
+import makeApp from './makeApp';
 
 export default (() => {
   const defaultLanguage = 'ru';
