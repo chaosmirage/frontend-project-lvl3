@@ -5,6 +5,7 @@ export default {
       duplicateRSS: 'RSS уже существует',
       networkError: 'Ошибка сети',
       invalidRSS: 'Ресурс не содержит валидный RSS',
+      notEmpty: 'Не должно быть пустым',
     },
     successMessages: {
       loadedRSS: 'RSS успешно загружен',

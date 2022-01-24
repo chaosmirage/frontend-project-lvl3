@@ -24,7 +24,7 @@ addMethod(array, 'unique', function (message, mapper = (a: unknown) => a) {
 });
 
 const feedSchema = object({
-  url: string().url('errorsMessages.invalidURL').required(),
+  url: string().url('errorsMessages.invalidURL').required('errorsMessages.notEmpty'),
 });
 
 export const feedsSchema = array()
