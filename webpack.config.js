@@ -3,6 +3,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = {
   mode: process.env.NODE_ENV || 'development',
+  experiments: {
+    outputModule: true,
+  },
   entry: {
     index: './src/index.ts',
     runApp: './src/runApp.ts',
@@ -10,6 +13,7 @@ const config = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js',
+    libraryTarget: 'module',
   },
   plugins: [
     new HtmlWebpackPlugin({
