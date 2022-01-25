@@ -1,7 +1,5 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import { InferType } from 'yup';
-import './style.css';
 declare module 'yup' {
     interface ArraySchema<T, C> {
         unique(message: string, mapper: (a: C) => C[keyof C]): ArraySchema<T>;

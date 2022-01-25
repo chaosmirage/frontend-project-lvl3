@@ -1,4 +1,4 @@
-import type { AppState, AppRenderElements } from './makeApp';
+import type { AppState, AppRenderElements } from './runApp';
 import type { i18n } from 'i18next';
 
 function renderAddingForm(state: AppState, elements: AppRenderElements, { t }: i18n) {
