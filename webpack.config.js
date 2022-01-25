@@ -5,7 +5,7 @@ const config = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
     index: './src/index.ts',
-    app: './src/runApp.ts',
+    runApp: './src/runApp.ts',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
