@@ -10,4 +10,7 @@ module.exports = {
   extensionsToTreatAsEsm: ['.ts'],
   verbose: true,
   coverageDirectory: 'coverage',
+  moduleNameMapper: {
+    '\\.(css)$': 'identity-obj-proxy',
+  },
 };
