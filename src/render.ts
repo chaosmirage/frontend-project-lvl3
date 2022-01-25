@@ -25,13 +25,13 @@ function renderAddingForm(state: AppState, elements: AppRenderElements, { t }: i
     addingFormFeedbackElement.classList.remove('text-danger', 'text-success');
     addingFormInputElement.classList.remove('is-invalid');
     addingFormFeedbackElement.textContent = '';
-    addingFormSubmitButtonElement.classList.add('disabled');
+    addingFormSubmitButtonElement.setAttribute('disabled', 'true');
     addingFormInputElement.setAttribute('readonly', 'true');
   }
 
   if (addingProcess.state === 'loading' && loadingProcess.state === 'error') {
     addingFormFeedbackElement.classList.remove('text-danger', 'text-success');
-    addingFormSubmitButtonElement.classList.remove('disabled');
+    addingFormSubmitButtonElement.removeAttribute('disabled');
     addingFormInputElement.removeAttribute('readonly');
 
     addingFormFeedbackElement.classList.add('text-danger');
@@ -40,7 +40,7 @@ function renderAddingForm(state: AppState, elements: AppRenderElements, { t }: i
 
   if (addingProcess.state === 'loading' && loadingProcess.state === 'loaded') {
     addingFormFeedbackElement.classList.remove('text-danger', 'text-success');
-    addingFormSubmitButtonElement.classList.remove('disabled');
+    addingFormSubmitButtonElement.removeAttribute('disabled');
     addingFormInputElement.removeAttribute('readonly');
 
     addingFormFeedbackElement.classList.add('text-success');
