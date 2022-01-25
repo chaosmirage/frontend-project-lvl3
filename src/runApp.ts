@@ -1,4 +1,5 @@
-import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './style.css';
 import onChange from 'on-change';
 import { array, object, string, InferType, ValidationError, addMethod } from 'yup';
 import uniqueId from 'lodash/uniqueId';

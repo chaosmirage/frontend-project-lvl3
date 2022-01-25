@@ -1,4 +1,5 @@
-import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './style.css';
 import { InferType } from 'yup';
 declare module 'yup' {
     interface ArraySchema<T, C> {

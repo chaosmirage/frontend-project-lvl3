@@ -28,7 +28,9 @@
     "jquery": "^3.5.1",
     "lodash": "^4.17.21",
     "on-change": "^4.0.0",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "html-webpack-plugin": "^4.5.0",
+    "webpack-merge": "^5.8.0"
   },
   "devDependencies": {
     "@jest/globals": "^26.6.2",
@@ -42,7 +44,6 @@
     "eslint-plugin-jest": "^24.3.5",
     "file-loader": "^6.2.0",
     "html-loader-jest": "^0.2.1",
-    "html-webpack-plugin": "^4.5.0",
     "jest": "^27.4.7",
     "jest-circus": "^26.6.3",
     "jest-environment-jsdom": "^27.4.6",

@@ -11,15 +11,12 @@ test-coverage:
 	npm test -- --coverage --coverageProvider=v8
 
 dev:
-	npx webpack serve
+	npx webpack serve --config ./webpack.dev.js
 
 install:
 	npm ci
 
 build:
-	npm list typescript
-	tsc --showConfig
-	node -v
 	rm -rf dist
 	NODE_ENV=production npx webpack
 
