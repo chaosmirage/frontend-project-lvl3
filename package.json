@@ -5,8 +5,8 @@
   "engines": {
     "node": "14.x"
   },
-  "main": "dist/bundle.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/runApp.bundle.js",
+  "types": "dist/runApp.d.ts",
   "scripts": {
     "test": "npx jest --bail"
   },

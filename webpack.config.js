@@ -3,10 +3,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = {
   mode: process.env.NODE_ENV || 'development',
-  entry: './src/index.ts',
+  entry: {
+    index: './src/index.ts',
+    app: './src/runApp.ts',
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
   },
   plugins: [
     new HtmlWebpackPlugin({
