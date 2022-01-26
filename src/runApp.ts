@@ -12,31 +12,11 @@ import * as resources from './locales';
 import render from './render';
 import makeRequest from './lib/makeRequest';
 
-declare module 'yup' {
-  interface ArraySchema<T, C> {
-    unique(message: string, mapper: (a: C) => C[keyof C]): ArraySchema<T>;
-  }
-}
-
-addMethod(array, 'unique', function (message, mapper = (a: unknown) => a) {
-  return this.test('unique', message, function (list) {
-    if (!list) {
-      return true;
-    }
-
-    return list.length === new Set(list.map(mapper)).size;
-  });
-});
-
-const feedSchema = object({
+const feedFormDataSchema = object({
   url: string().url('errorsMessages.invalidURL').required('errorsMessages.notEmpty'),
 });
 
-export const feedsSchema = array()
-  .of(feedSchema)
-  .unique('errorsMessages.duplicateRSS', (value) => value.url);
-
-export interface AddingFeed extends InferType<typeof feedSchema> {}
+export interface AddingFeed extends InferType<typeof feedFormDataSchema> {}
 
 export interface Feed {
   url: AddingFeed['url'];
@@ -276,15 +256,21 @@ export default () => {
 
         const url = formData.get('url') as string;
 
-        const newFeedData: Pick<Feed, 'url'> = {
+        const feedFormData: Pick<Feed, 'url'> = {
           url,
         };
 
-        const newFeedsData = [...onChange.target(watchedAppState).feed.feeds, newFeedData];
-
-        feedsSchema
-          .validate(newFeedsData)
+        feedFormDataSchema
+          .validate(feedFormData)
           .then(() => {
+            const hasFeedAlreadyExist = watchedAppState.feed.feeds.find(
+              ({ url }) => feedFormData.url === url
+            );
+
+            if (hasFeedAlreadyExist) {
+              throw new Error('errorsMessages.duplicateRSS');
+            }
+
             watchedAppState.feed.addingProcess.errors = [];
             watchedAppState.feed.addingProcess.state = 'loading';
             watchedAppState.feed.loadingProcess.state = 'started';
